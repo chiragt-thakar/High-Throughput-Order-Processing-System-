@@ -1,0 +1,232 @@
+{
+	"info": {
+		"_postman_id": "02014fe9-2c29-453c-90ba-68db690f1ff2",
+		"name": "High Throughput Order Processing System",
+		"description": "Interview project - Node.js, Express, PostgreSQL, Redis, BullMQ",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "28251433"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"chirag@yopmail.com\",\n  \"password\": \"Chirag@123\",\n  \"name\":\"chirag\"\n}"
+						},
+						"url": "{{base_url}}/auth/register"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const res = pm.response.json();",
+									"pm.collectionVariables.set('token', res.result.token);"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "// {\n//   \"email\": \"chirag@yopmail.com\",\n//   \"password\": \"Chirag@123\"\n// }\n{\n  \"email\": \"admin@yopmail.com\",\n  \"password\": \"Admin@123\"\n}"
+						},
+						"url": "{{base_url}}/auth/login"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Me",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/auth/me"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"product_name\": \"keyboard\",\n  \"amount\": 1000\n}"
+						},
+						"url": "{{base_url}}/orders"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Orders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/orders?page=1&limit=10",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order By ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/orders/2"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Get All Orders",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/admin/orders?fromDate=2024-12-01&toDate=2025-12-31&status=COMPLETED&limit=5&cursor=2025-12-30T10:15:22.123Z&search=chirag",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"admin",
+								"orders"
+							],
+							"query": [
+								{
+									"key": "fromDate",
+									"value": "2024-12-01"
+								},
+								{
+									"key": "toDate",
+									"value": "2025-12-31"
+								},
+								{
+									"key": "status",
+									"value": "COMPLETED",
+									"description": "PENDING/COMPLETED"
+								},
+								{
+									"key": "limit",
+									"value": "5"
+								},
+								{
+									"key": "cursor",
+									"value": "2025-12-30T10:15:22.123Z"
+								},
+								{
+									"key": "search",
+									"value": "chirag"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Stats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}"
+							}
+						],
+						"url": "{{base_url}}/admin/stats"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000/api"
+		},
+		{
+			"key": "token",
+			"value": ""
+		}
+	]
+}
